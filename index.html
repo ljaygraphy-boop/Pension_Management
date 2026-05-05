@@ -51,7 +51,7 @@ body::before{display:none}
   font-family: var(--fd);
   
   /* 1. 글씨 크기: 숫자를 키우세요 (예: 20px -> 28px) */
-  font-size: 28px !important; 
+  font-size: 34px !important; 
   
   /* 2. 굵기: 가장 굵은 수치는 900입니다 (기존 800에서 변경) */
   font-weight: 900 !important; 
@@ -98,6 +98,20 @@ body::before{display:none}
   margin-left: auto; /* 왼쪽 여백을 최대로 밀어서 우측 정렬 */
 }
 
+  .footer {
+  text-align: center;   /* 가운데 정렬 */
+  padding: 40px 0 30px; /* 위아래 여백 (위쪽을 넉넉히 줌) */
+  margin-top: 50px;    /* 위쪽 콘텐츠와의 간격 */
+}
+
+.footer p {
+  font-family: var(--fm); /* 개발자 느낌 나는 JetBrains Mono 폰트 사용 */
+  font-size: 13px;        /* 약간 작고 세련된 크기 */
+  color: var(--muted);    /* 너무 튀지 않는 차분한 색상 */
+  letter-spacing: 1px;    /* 글자 간격을 살짝 벌려 감성 한 스푼 */
+  opacity: 0.7;           /* 살짝 투명하게 해서 은은하게 표시 */
+}
+  
 /* ── KPI ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;
@@ -1213,5 +1227,11 @@ window.addEventListener('DOMContentLoaded',()=>{
   });
 });
 </script>
+
+  <footer class="footer">
+  <p>@yeon_graphy</p>
+</footer>
+
+  
 </body>
 </html>
