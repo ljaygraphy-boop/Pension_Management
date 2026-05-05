@@ -49,11 +49,16 @@ body::before{display:none}
 /* 제목 부분: 한 줄로 고정 */
 .header-left h1 {
   font-family: var(--fd);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -.5px;
+  
+  /* 1. 글씨 크기: 숫자를 키우세요 (예: 20px -> 28px) */
+  font-size: 28px !important; 
+  
+  /* 2. 굵기: 가장 굵은 수치는 900입니다 (기존 800에서 변경) */
+  font-weight: 900 !important; 
+  
+  letter-spacing: -1px; /* 글자 간격을 살짝 더 좁히면 더 꽉 차 보입니다 */
   color: var(--acc2);
-  white-space: nowrap; /* 글자가 길어져도 줄바꿈 방지 */
+  white-space: nowrap;
 }
 
 /* '-' 표시가 있는 설명 부분 삭제 */
