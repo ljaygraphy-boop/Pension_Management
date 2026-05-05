@@ -8,10 +8,10 @@
 <style>
 :root {
   --bg:       #FAFB8A;
-  --sur:      transparent;
-  --sur2:     transparent;
-  --bdr:      transparent;
-  --bdr2:     transparent;
+  --sur:      #FFFFFF;
+  --sur2:     #F8F9FA;
+  --bdr:      #E2E5EA;
+  --bdr2:     #CDD1D9;
   --acc:      #2557A7;
   --acc2:     #1A3A6B;
   --gold:     #E08A00;
@@ -33,13 +33,30 @@ body::before{display:none}
 .app{max-width:1280px;margin:0 auto;padding:0 clamp(12px,3vw,32px) 60px}
 
 /* ── Header ── */
-.header{padding:16px 0 16px;display:flex;align-items:center;justify-content:space-between;
-  background:var(--sur);border-bottom:2px solid var(--bdr);margin-bottom:24px;
-  gap:12px;flex-wrap:wrap;padding-left:clamp(12px,3vw,32px);padding-right:clamp(12px,3vw,32px);
-  position:sticky;top:0;z-index:50;box-shadow:var(--shadow)}
-.header-left h1{font-family:var(--fd);font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--acc2)}
-.header-left p{color:var(--muted);font-size:11px;margin-top:2px}
-.header-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.header {
+  padding: 16px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  /* 1. 배경을 투명하게 변경 */
+  background: transparent !important; 
+  
+  /* 2. 하단 테두리 제거 (0으로 변경) */
+  border-bottom: 0px solid transparent !important; 
+  
+  /* 3. 그림자 제거 */
+  box-shadow: none !important; 
+
+  margin-bottom: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-left: clamp(12px,3vw,32px);
+  padding-right: clamp(12px,3vw,32px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
 
 /* ── KPI ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
