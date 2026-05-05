@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>연금 포트폴리오</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>연금 포트폴리오</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- 아이콘 라이브러리는 반드시 여기에! -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
 :root {
   --bg:       #FAFB8A;
   --sur:      #FFFFFF;
@@ -74,15 +76,19 @@ body::before{display:none}
   flex-shrink: 0;
 }
 
-  <!-- 아이콘 라이브러리 추가 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+<div class="header">
+  <div class="header-left">
+    <h1>연금 포트폴리오</h1>
+    <p id="lastUpdated">—</p>
+  </div>
   <div class="header-right">
-  <!-- 스프레드시트 업데이트 버튼 -->
-  <button onclick="updateSheet()" class="btn-icon google-sheet" title="스프레드시트 업데이트">
-    <i class="fa-solid fa-file-csv"></i> <span>업데이트</span>
-  </button>
-  
+    <!-- 구글 스프레드시트 업데이트 버튼 -->
+    <button onclick="updateSheet()" class="btn-icon google-sheet" title="스프레드시트 업데이트">
+      <i class="fa-solid fa-file-csv"></i> <span>업데이트</span>
+    </button>
+    <button class="btn btn-outline-header" onclick="openModal()">＋ 거래 추가</button>
+    <button class="btn btn-outline-header" onclick="openTxPopup()">📋 거래내역</button>
+  </div>
 </div>
 
   /* 기존 .btn-icon 스타일은 유지하고 아래 색상만 확인하세요 */
