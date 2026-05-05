@@ -85,7 +85,44 @@ body::before{display:none}
   
 </div>
 
+  /* 기존 .btn-icon 스타일은 유지하고 아래 색상만 확인하세요 */
+.google-sheet {
+  border-color: #1D854E !important; /* 테두리를 시트색으로 강조 */
+  color: #1D854E !important;
+}
 
+.google-sheet:hover {
+  background: #f0fff4 !important; /* 마우스 올렸을 때 연한 초록색 배경 */
+}
+
+async function updateSheet() {
+  // 사용자가 실수로 누르는 걸 방지하기 위해 확인창 띄우기
+  if (!confirm("현재 데이터를 구글 스프레드시트로 업데이트할까요?")) return;
+
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbxVcYam5rbW3cBYVcmYnADSjuXuIW2ZTPdYRGU_3kBo1PQgaqjCa8k5yDo9lbsg81DLcA/exec';
+  
+  // 보낼 데이터 구성 (실제 페이지의 데이터 추출 로직이 들어가야 함)
+  const data = {
+    date: new Date().toLocaleString(),
+    title: document.querySelector('.header-left h1').innerText, // "연금 포트폴리오"
+    status: "업데이트 시도" 
+  };
+
+  try {
+    const response = await fetch(scriptUrl, {
+      method: 'POST',
+      mode: 'no-cors', // CORS 문제 방지
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    
+    alert('✅ 스프레드시트에 성공적으로 기록되었습니다!');
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ 저장 실패! 인터넷 연결이나 설정을 확인해 주세요.');
+  }
+}
+  
 /* 📱 모바일 환경 (아이폰 등) 설정 */
 @media (max-width: 480px) {
   .header-right {
