@@ -591,7 +591,7 @@ function load() {
         const vals = Object.values(D.targetWeights).filter(v => v !== 0);
         if (vals.length > 0 && vals.every(v => v > 0 && v < 1)) {
           Object.keys(D.targetWeights).forEach(k => {
-            D.targetWeights[k] = Math.round(D.targetWeights[k] * 1000) / 10;
+            D.targetWeights[k] = Math.round(D.targetWeights[k] * 100);
           });
           save();
         }
@@ -637,15 +637,16 @@ function getCatSum(h) {
     // 계좌 필터 활성 시 해당 계좌별 목표비중, 전체면 계좌별 가중평균
     let tw = 0;
     if (activeFilter !== 'All') {
-      tw = (D.targetWeights[`${activeFilter}__${cat}`] ?? D.targetWeights[cat] ?? 0) / 100;
+      tw = (D.targetWeights[`${activeFilter}__${cat}`] ?? 0) / 100;
     } else {
-      const accs = ['IRP','퇴직연금','개인연금','ISA'];
-      const allEv = getHoldings().reduce((s,x)=>s+x.ev,0);
-      accs.forEach(acc => {
-        const accEv = getHoldings().filter(x=>x.account===acc).reduce((s,x)=>s+x.ev,0);
-        const w = allEv>0 ? accEv/allEv : 0;
-        tw += (D.targetWeights[`${acc}__${cat}`] ?? 0) / 100 * w;
-      });
+      // 전체 필터: 계좌별 목표비중의 단순 평균 (데이터 있는 계좌만)
+      const accsWithData = ['IRP','퇴직연금','개인연금','ISA'].filter(acc =>
+        D.transactions.some(t => t.account === acc && t.category === cat)
+      );
+      if (accsWithData.length > 0) {
+        const sum = accsWithData.reduce((s, acc) => s + (D.targetWeights[`${acc}__${cat}`] ?? 0), 0);
+        tw = (sum / accsWithData.length) / 100;
+      }
     }
     return { cat, byAcc, total, aw, tw, diff:aw-tw };
   }).sort((a,b)=>b.total-a.total);
@@ -831,7 +832,7 @@ function rCatTable(catS, totE) {
       <td class="num">${fmtN(c.total)}</td>
       <td class="num">${(c.aw*100).toFixed(1)}%</td>
       <td><span class="num" style="cursor:pointer;color:var(--acc);text-decoration:underline dotted"
-        onclick="editTW('${c.cat}',${c.tw})">${(c.tw*100).toFixed(1)}%</span></td>
+        onclick="editTW('${c.cat}',${c.tw})">${Math.round(c.tw*100)}%</span></td>
       <td class="num ${dc}">${fmtP(c.diff)}</td>
       ${needCell}
     </tr>`;
@@ -1048,7 +1049,7 @@ function openTWModal() {
     if (!cats.length) return '';
     const rows = cats.map(cat => {
       const twKey = `${acc}__${cat}`;
-      const cur = (D.targetWeights[twKey] ?? D.targetWeights[cat] ?? 0).toFixed(1);
+      const cur = Math.round(D.targetWeights[twKey] ?? D.targetWeights[cat] ?? 0);
       const totEv = accEval[acc].total;
       const catEv = accEval[acc].bycat[cat] || 0;
       const actualPct = totEv > 0 ? (catEv / totEv * 100).toFixed(1) : '0.0';
@@ -1059,7 +1060,7 @@ function openTWModal() {
         </div>
         <span style="font-size:11px;color:var(--muted);width:52px;text-align:right;">현재 ${actualPct}%</span>
         <div style="display:flex;align-items:center;gap:4px;">
-          <input class="price-inp" type="number" value="${cur}" min="0" max="100" step="0.1"
+          <input class="price-inp" type="number" value="${cur}" min="0" max="100" step="1"
             data-cat="${cat}" data-acc="${acc}" data-key="${acc}__${cat}"
             style="width:72px;color:var(--acc2);" oninput="updateTWTotal('${acc}')">
           <span style="font-size:12px;color:var(--muted);">%</span>
@@ -1096,7 +1097,7 @@ function closeTWModal() { document.getElementById('tw-modal').classList.remove('
 
 function saveTW() {
   document.querySelectorAll('#tw-fields input').forEach(inp => {
-    D.targetWeights[inp.dataset.key] = parseFloat(inp.value) || 0;
+    D.targetWeights[inp.dataset.key] = Math.round(parseFloat(inp.value) || 0);
   });
   save(); render(); closeTWModal(); toast('목표 비중이 저장되었습니다');
 }
@@ -1139,7 +1140,7 @@ function toast(msg,isErr=false){
 }
 
 /* ═══ GOOGLE SHEET SYNC ═══ */
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyW0QwPaeCRccdMjTimL8fRzmujba99iGOVVZZSppxVTQ-RjXjyv8ZpXVC44unGDOY9kw/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWQTLqv-izhXvFTZUNOPg5C6d4STH1ht9Q6CkjOsUqk7y4U0TxMNplWQCJ-cnfROZH7g/exec';
 
 async function updateSheet() {
   if (!confirm('현재 데이터를 구글 스프레드시트로 업데이트할까요?')) return;
@@ -1168,6 +1169,10 @@ async function updateSheet() {
       pnl:       a.pnl,
       rate:      (a.rate*100).toFixed(2) + '%',
     })),
+    // 계좌별 카테고리 목표비중: { "IRP__해외ETF": 40, "퇴직연금__국내ETF": 50, ... }
+    targetWeights: Object.fromEntries(
+      Object.entries(D.targetWeights).map(([k, v]) => [k, v])
+    ),
     holdings: holdings.map(h => ({
       account:   h.account,
       name:      h.name,
