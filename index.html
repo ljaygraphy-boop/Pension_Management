@@ -637,14 +637,14 @@ function getCatSum(h) {
     // 계좌 필터 활성 시 해당 계좌별 목표비중, 전체면 계좌별 가중평균
     let tw = 0;
     if (activeFilter !== 'All') {
-      tw = (D.targetWeights[`${activeFilter}__${cat}`] ?? D.targetWeights[cat] ?? 0) / 100;
+      tw = (D.targetWeights[`${activeFilter}__${cat}`] ?? D.targetWeights[cat] ?? 0) ;
     } else {
       const accs = ['IRP','퇴직연금','개인연금','ISA'];
       const allEv = getHoldings().reduce((s,x)=>s+x.ev,0);
       accs.forEach(acc => {
         const accEv = getHoldings().filter(x=>x.account===acc).reduce((s,x)=>s+x.ev,0);
         const w = allEv>0 ? accEv/allEv : 0;
-        tw += (D.targetWeights[`${acc}__${cat}`] ?? 0) / 100 * w;
+        tw += (D.targetWeights[`${acc}__${cat}`] ?? 0)  * w;
       });
     }
     return { cat, byAcc, total, aw, tw, diff:aw-tw };
