@@ -627,26 +627,30 @@ function getAccSum(all) {
   });
 }
 function getCatSum(h) {
+  // 현재 화면에 보여지는 총 평가금액
   const tot = h.reduce((s, x) => s + x.ev, 0);
-  
+
   return [...new Set(h.map(x => x.category))].map(cat => {
     const items = h.filter(x => x.category === cat);
     const byAcc = { IRP: 0, '퇴직연금': 0, '개인연금': 0, 'ISA': 0 };
     items.forEach(x => byAcc[x.account] = (byAcc[x.account] || 0) + x.ev);
-    const total = items.reduce((s, x) => s + x.ev, 0);
     
-    // 실제 비중 (현재 금액 기준)
-    const aw = tot > 0 ? total / tot : 0;
+    const total = items.reduce((s, x) => s + x.ev, 0);
+    const aw = tot > 0 ? total / tot : 0; // 실제 비중
 
-    // [수정된 부분] 가중평균 없이 입력한 목표값을 그대로 가져옵니다.
-    let tw = 0;
+    // [수정 핵심] 복잡한 계산(가중치)을 모두 삭제하고 설정값을 그대로 가져옴
+    let targetValue = 0;
     if (activeFilter !== 'All') {
-      // 특정 계좌 필터 시: 해당 계좌의 목표값 -> 없으면 카테고리 기본 목표값
-      tw = (D.targetWeights[`${activeFilter}__${cat}`] ?? D.targetWeights[cat] ?? 0) / 100;
+      // 특정 계좌(IRP 등) 필터 시: 해당 계좌의 목표값 우선, 없으면 카테고리 기본값
+      targetValue = (D.targetWeights[`${activeFilter}__${cat}`] ?? D.targetWeights[cat] ?? 0);
     } else {
-      // "전체" 탭일 때: 카테고리 자체에 설정된 기본 목표값을 그대로 보여줌
-      tw = (D.targetWeights[cat] ?? 0) / 100;
+      // "전체" 탭일 때: 카테고리에 설정된 목표값을 그대로 가져옴
+      targetValue = (D.targetWeights[cat] ?? 0);
     }
+
+    // fmtP 함수가 나중에 100을 곱해서 보여주므로, 여기서는 100으로만 나누어 단위를 맞춤
+    // 예: 10 입력 -> 0.1 저장 -> 화면에선 10.00%로 출력
+    const tw = targetValue / 100;
 
     return { cat, byAcc, total, aw, tw, diff: aw - tw };
   }).sort((a, b) => b.total - a.total);
