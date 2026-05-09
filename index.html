@@ -1140,7 +1140,7 @@ function toast(msg,isErr=false){
 }
 
 /* ═══ GOOGLE SHEET SYNC ═══ */
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwSj-tL9qhBNo69Pce0RkI-2_8CrwB46tpC8itrg8On8R9be3dVqUIcjzTqxmEPj56q0w/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzCuVvhuiKAxxtsFPNrz0FP6vUU0Ulsp2nQGx1RC9ApWzO2roi0S5E9TAKL-EmqiFggQQ/exec';
 
 async function updateSheet() {
   if (!confirm('현재 데이터를 구글 스프레드시트로 업데이트할까요?')) return;
@@ -1202,7 +1202,7 @@ async function updateSheet() {
     await fetch(SHEET_URL, {
       method: 'POST',
       mode:   'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body:   JSON.stringify(payload),
     });
     toast('스프레드시트에 업데이트되었습니다 ✓');
